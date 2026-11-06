@@ -31,6 +31,15 @@
 
 ## Implementation approach
 
+### Visual direction
+
+- Use the project owner's preferred Apple website palette: white and soft gray surfaces, near-black text, and restrained blue actions.
+- Keep colors in the semantic tokens at the top of `src/styles.css`. The main colors are `#ffffff`, `#f5f5f7`, `#1d1d1f`, `#6e6e73`, and `#0071e3`.
+- Use orange and red only for meaningful warning and error states. Keep the app icon consistent with the neutral and blue palette.
+- Preserve the established typography and planning flow when a change concerns colors alone.
+
+### Development
+
 - Complete the first end-to-end workflow before expanding the feature list.
 - Favor familiar React, Vite, and TypeScript patterns where useful. The application architecture is not implemented yet; explain material technology choices before adding infrastructure.
 - Keep AI credentials on the server. Use explicit demo fixtures when live generation is unavailable, and label them clearly.
