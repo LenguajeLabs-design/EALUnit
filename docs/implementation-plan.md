@@ -2,21 +2,23 @@
 
 ## Current state
 
-As of 6 November 2026, EAL Unit is an independent repository with planning documents and no application implementation.
+As of 6 November 2026, EAL Unit has an independent local application implementing the first planning workflow, versioned approvals, connected lessons, browser persistence, JSON backups, and basic unit insights. See the README for setup and `architecture.md` for the current design and limits.
 
 Scaffold App V.2.0 was inspected read-only. Its source contains a React/Vite/TypeScript frontend, an Express API, validated AI generation, and saved-lesson patterns. Its development-only unit-planning preview demonstrates a unit overview, language journey, lesson focus, and evidence-driven next steps using preset example lessons and local storage. These are reference patterns, not implemented EAL Unit features.
 
 ## Technical direction
 
-Use React, Vite, and TypeScript as the likely frontend starting point, keeping useful visual and component patterns familiar. Build only the packages needed for the current milestone rather than duplicating the entire Scaffold workspace.
+React, Vite, and TypeScript provide the frontend. A small Express server runs independent AI endpoints and serves the app. The project does not duplicate the Scaffold workspace.
 
-Start with isolated browser persistence for the local prototype and a small storage interface. Add schema versions and clear handling for invalid data or failed saves. Revisit server persistence when cross-device use, accounts, or pilot requirements justify it.
+Versioned browser persistence, backup validation, and visible save failures are implemented. Revisit server persistence when cross-device use, accounts, or pilot requirements justify it.
 
 Live AI generation requires an independent server endpoint with request and response validation. Scaffold's Express/Zod patterns are a useful reference. Configure credentials on the server and use separate EAL Unit services. A GitHub repository alone does not provide a running generation service.
 
 Use explicit, labeled fixtures while building interactions. Do not present preset examples as live AI analysis. Do not carry over Scaffold account systems, production endpoints, databases, or deployment configuration by default.
 
 ## Stage 1: first complete workflow
+
+Implementation status: the local workflow and independent generation endpoints are built. Deterministic checks and browser verification are recorded in `verification.md`. The first real curriculum/group pilot remains outstanding.
 
 Deliver:
 
@@ -56,6 +58,8 @@ Acceptance criteria:
 Verification should cover the connected workflow, persisted relationships, approval gates, and failure recovery. Review at least one example blueprint and lesson for curricular fit and instructional usefulness.
 
 ## Stage 2: unit insight and controlled editing
+
+Implementation status: basic coverage, prerequisite, timing, explicit-language-purpose, and changed-revision checks are included in the prototype. Targeted AI regeneration and reflection-driven revision proposals remain outstanding.
 
 Implement:
 
