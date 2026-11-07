@@ -5,16 +5,20 @@ import { request, type Server } from 'node:http';
 import { createApp } from '../server/app';
 import { exampleBlueprint, exampleContext } from '../shared/example';
 import { approveUnit, createUnit, lessonOutline } from '../shared/planning';
+import type { Context } from '../shared/model';
+import { fixtureSource } from './pdf-fixtures';
 
 let server: Server;
 let base: string;
 let calls = 0;
+let lastContext: Context | undefined;
 before(async () => {
   const app = createApp({
     enabled: true,
     generators: {
       blueprint: async (context) => {
         calls++;
+        lastContext = context;
         if (context.title === 'Provider failure') throw new Error('provider-private-secret');
         return exampleBlueprint();
       },
@@ -87,6 +91,25 @@ test('valid curriculum produces a structured blueprint', async () => {
   assert.equal(response.status, 200);
   const blueprint = await response.json();
   assert.equal(blueprint.steps.length, 5);
+});
+test('reviewed PDF pages reach generation without a retyped curriculum brief', async () => {
+  const source = fixtureSource();
+  const response = await post('/api/blueprint', {
+    ...exampleContext,
+    curriculum: '',
+    curriculumSources: [source],
+  });
+  assert.equal(response.status, 200);
+  assert.equal(lastContext?.curriculum, '');
+  assert.deepEqual(lastContext?.curriculumSources, [source]);
+});
+test('invalid source pages are rejected before generation', async () => {
+  const source = fixtureSource();
+  source.pages[0].page = source.pageCount + 1;
+  const beforeCalls = calls;
+  const response = await post('/api/blueprint', { ...exampleContext, curriculumSources: [source] });
+  assert.equal(response.status, 400);
+  assert.equal(calls, beforeCalls);
 });
 test('lesson generation requires approval and valid learning-step references', async () => {
   const draft = createUnit(exampleContext, exampleBlueprint(), 'example');

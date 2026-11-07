@@ -91,6 +91,11 @@ export function Empty({ title, children }: { title: string; children: ReactNode 
 }
 
 export async function postJSON<T>(url: string, body: unknown): Promise<T> {
+  if (import.meta.env.MODE === 'pages') {
+    throw new Error(
+      'AI drafting is available in the local app with its separate server. Your work is still here.',
+    );
+  }
   let response: Response;
   try {
     response = await fetch(url, {

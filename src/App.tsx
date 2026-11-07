@@ -88,10 +88,11 @@ export default function App() {
       window.scrollTo({ top: 0 });
     }
     window.addEventListener('hashchange', onHash);
-    void fetch('/api/config')
-      .then((response) => (response.ok ? response.json() : null))
-      .then((config) => setAiEnabled(config?.generationEnabled === true))
-      .catch(() => {});
+    if (import.meta.env.MODE !== 'pages')
+      void fetch('/api/config')
+        .then((response) => (response.ok ? response.json() : null))
+        .then((config) => setAiEnabled(config?.generationEnabled === true))
+        .catch(() => {});
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
   useEffect(() => {
@@ -235,7 +236,7 @@ export default function App() {
       </a>
       <aside className="sidebar no-print">
         <a href="#/units" className="brand" aria-label="EAL Unit home">
-          <img src="/mark.svg" alt="" width="42" height="42" />
+          <img src={`${import.meta.env.BASE_URL}mark.svg`} alt="" width="42" height="42" />
           <span>
             EAL Unit<small>BY LENGUAJE LABS</small>
           </span>
@@ -544,7 +545,7 @@ export default function App() {
       {backupOpen && (
         <Dialog
           title="Keep a copy of your planning"
-          description="Plans are saved in this browser. A JSON backup preserves unit revisions, lesson links, and your edits."
+          description="Plans are saved in this browser. A JSON backup preserves unit revisions, lesson links, edits, and reviewed PDF text. Keep original PDF files separately."
           onClose={() => {
             if (!restoring) setBackupOpen(false);
           }}
@@ -645,9 +646,11 @@ export default function App() {
             </p>
             <p>
               <strong>Early preview.</strong>{' '}
-              {aiEnabled
-                ? 'AI drafting is configured on this local server.'
-                : 'AI drafting is unavailable here; examples and editable outlines still work.'}{' '}
+              {import.meta.env.MODE === 'pages'
+                ? 'This GitHub Pages edition supports PDF sources, manual planning, and examples. AI drafting requires the separate local server.'
+                : aiEnabled
+                  ? 'AI drafting is configured on this local server.'
+                  : 'AI drafting is unavailable here; examples and editable outlines still work.'}{' '}
               School accounts, cloud sync, and reflection-driven revisions are not included yet.
             </p>
           </div>

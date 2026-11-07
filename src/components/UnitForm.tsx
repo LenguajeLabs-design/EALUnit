@@ -9,6 +9,7 @@ import {
 } from '../../shared/model';
 import { blankBlueprint } from '../../shared/example';
 import { Eyebrow, Field, Spinner, postJSON } from './ui';
+import { CurriculumSourcesPanel } from './CurriculumSources';
 
 export default function UnitForm({
   aiEnabled,
@@ -29,6 +30,7 @@ export default function UnitForm({
   const [mode, setMode] = useState<'ai' | 'outline'>(aiEnabled ? 'ai' : 'outline');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [pdfBusy, setPdfBusy] = useState(false);
   const active = useRef(true);
   useEffect(() => {
     active.current = true;
@@ -41,6 +43,10 @@ export default function UnitForm({
   async function submit(event: FormEvent) {
     event.preventDefault();
     setError('');
+    if (pdfBusy) {
+      setError('Review and use your PDF pages before creating the blueprint.');
+      return;
+    }
     const parsed = contextSchema.safeParse(context);
     if (!parsed.success) {
       setError(parsed.error.issues[0]?.message || 'Check the required fields.');
@@ -116,13 +122,23 @@ export default function UnitForm({
                     </select>
                   </Field>
                 </div>
+                <CurriculumSourcesPanel
+                  sources={context.curriculumSources ?? []}
+                  onChange={(sources) => update('curriculumSources', sources)}
+                  disabled={busy}
+                  onBusyChange={setPdfBusy}
+                />
                 <Field
                   label="What will students understand and do?"
-                  hint="Paste a workshop overview, or describe the task and what successful work looks like."
+                  hint={
+                    context.curriculumSources?.length
+                      ? 'Optional: give the unit a focus or add context beyond the reviewed PDF pages.'
+                      : 'Paste a workshop overview, describe the task, or upload and review a PDF above.'
+                  }
                 >
                   <textarea
-                    required
-                    minLength={30}
+                    required={!context.curriculumSources?.length}
+                    minLength={context.curriculumSources?.length ? undefined : 30}
                     maxLength={12000}
                     rows={7}
                     placeholder="Students will… During workshop they will read, discuss, or write…"
@@ -202,7 +218,9 @@ export default function UnitForm({
                       <small>
                         {aiEnabled
                           ? 'Get a suggested sequence to review and edit.'
-                          : 'Available when the local server has an API key.'}
+                          : import.meta.env.MODE === 'pages'
+                            ? 'Use the local app for AI drafting. PDF sources work here.'
+                            : 'Available when the local server has an API key.'}
                       </small>
                     </span>
                   </label>
@@ -222,8 +240,8 @@ export default function UnitForm({
                 </div>
                 {mode === 'ai' && (
                   <p className="privacy-note">
-                    Your workshop overview and group notes will be sent to OpenAI to draft
-                    suggestions. Review what you share before continuing.
+                    Your workshop overview, reviewed PDF pages, and group notes will be sent to
+                    OpenAI to draft suggestions. Review what you share before continuing.
                   </p>
                 )}
               </div>
@@ -238,14 +256,15 @@ export default function UnitForm({
             <a className="button secondary" href="#/units">
               Cancel
             </a>
-            <button className="button primary" disabled={busy}>
+            <button className="button primary" disabled={busy || pdfBusy}>
               {busy ? (
                 <>
                   <Spinner /> Building your blueprint…
                 </>
               ) : (
                 <>
-                  Create unit blueprint <ArrowRight size={17} />
+                  {pdfBusy ? 'Review PDF pages first' : 'Create unit blueprint'}{' '}
+                  <ArrowRight size={17} />
                 </>
               )}
             </button>

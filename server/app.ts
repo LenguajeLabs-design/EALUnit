@@ -61,7 +61,7 @@ export function createApp(options: { enabled?: boolean; generators?: Generators 
       },
     }),
   );
-  app.use('/api', express.json({ limit: '128kb' }));
+  app.use('/api', express.json({ limit: '512kb' }));
   app.post('/api/blueprint', async (req, res) => {
     const parsed = contextSchema.safeParse(req.body);
     if (!parsed.success) {
@@ -71,23 +71,19 @@ export function createApp(options: { enabled?: boolean; generators?: Generators 
       return;
     }
     if (!enabled) {
-      res
-        .status(503)
-        .json({
-          error:
-            'AI drafting is not configured. You can still use an editable outline or explore the example.',
-        });
+      res.status(503).json({
+        error:
+          'AI drafting is not configured. You can still use an editable outline or explore the example.',
+      });
       return;
     }
     try {
       res.json(await generators.blueprint(parsed.data));
     } catch {
-      res
-        .status(502)
-        .json({
-          error:
-            'A complete blueprint could not be created. Your input has been kept. Try again or start with an editable outline.',
-        });
+      res.status(502).json({
+        error:
+          'A complete blueprint could not be created. Your input has been kept. Try again or start with an editable outline.',
+      });
     }
   });
   const lessonRequest = z.object({ unit: unitSchema, stepIds: z.array(z.string()).min(1).max(12) });
@@ -125,12 +121,10 @@ export function createApp(options: { enabled?: boolean; generators?: Generators 
     try {
       res.json(await generators.lesson(unit, stepIds));
     } catch {
-      res
-        .status(502)
-        .json({
-          error:
-            'A complete lesson could not be created. Your approved unit is safe. Try again or use an editable lesson outline.',
-        });
+      res.status(502).json({
+        error:
+          'A complete lesson could not be created. Your approved unit is safe. Try again or use an editable lesson outline.',
+      });
     }
   });
   app.use('/api', (_req, res) =>
@@ -143,14 +137,12 @@ export function createApp(options: { enabled?: boolean; generators?: Generators 
       res: express.Response,
       _next: express.NextFunction,
     ) => {
-      res
-        .status(error.type === 'entity.too.large' ? 413 : 400)
-        .json({
-          error:
-            error.type === 'entity.too.large'
-              ? 'This planning request is too large. Shorten the source material.'
-              : 'The planning request could not be read.',
-        });
+      res.status(error.type === 'entity.too.large' ? 413 : 400).json({
+        error:
+          error.type === 'entity.too.large'
+            ? 'This planning request is too large. Shorten the source material.'
+            : 'The planning request could not be read.',
+      });
     },
   );
   return app;

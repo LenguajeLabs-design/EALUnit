@@ -1,4 +1,6 @@
 import type { Blueprint, Context, LearningStep, Lesson, LessonContent, Unit } from './model';
+import { contextSchema } from './model';
+import { blueprintReferenceIssues, referenceIssues } from './curriculum';
 
 export const newId = () => crypto.randomUUID();
 
@@ -75,6 +77,37 @@ export function createUnit(context: Context, blueprint: Blueprint, mode: Unit['m
 export const currentApproval = (unit: Unit) =>
   unit.approvals.find((approval) => approval.revision === unit.revision);
 
+export function editUnitContext(unit: Unit, next: Context): Unit {
+  const context = contextSchema.parse(next);
+  if (JSON.stringify(unit.context) === JSON.stringify(context)) return unit;
+  const sources = context.curriculumSources ?? [];
+  const clean = <T extends { sourceRefs?: import('./curriculum').SourceReference[] }>(
+    item: T,
+  ): T =>
+    item.sourceRefs
+      ? {
+          ...item,
+          sourceRefs: item.sourceRefs.filter((ref) => !referenceIssues([ref], sources).length),
+        }
+      : item;
+  return {
+    ...unit,
+    context,
+    revision: currentApproval(unit) ? unit.revision + 1 : unit.revision,
+    blueprint: {
+      ...unit.blueprint,
+      goals: unit.blueprint.goals.map(clean),
+      demands: unit.blueprint.demands.map(clean),
+      steps: unit.blueprint.steps.map(clean),
+    },
+    approvals: unit.approvals.map((approval) => ({
+      ...approval,
+      context: approval.context ?? structuredClone(unit.context),
+    })),
+    updatedAt: new Date().toISOString(),
+  };
+}
+
 export function editBlueprint(unit: Unit, blueprint: Blueprint): Unit {
   if (JSON.stringify(unit.blueprint) === JSON.stringify(blueprint)) return unit;
   return {
@@ -86,7 +119,10 @@ export function editBlueprint(unit: Unit, blueprint: Blueprint): Unit {
 }
 
 export function approveUnit(unit: Unit): Unit {
-  const issues = blueprintIssues(unit.blueprint);
+  const issues = [
+    ...blueprintIssues(unit.blueprint),
+    ...blueprintReferenceIssues(unit.blueprint, unit.context.curriculumSources ?? []),
+  ];
   if (issues.length) throw new Error(issues[0]);
   if (currentApproval(unit)) return unit;
   const blueprint: Blueprint = {
@@ -101,7 +137,12 @@ export function approveUnit(unit: Unit): Unit {
     blueprint,
     approvals: [
       ...unit.approvals,
-      { revision: unit.revision, approvedAt: now, blueprint: structuredClone(blueprint) },
+      {
+        revision: unit.revision,
+        approvedAt: now,
+        blueprint: structuredClone(blueprint),
+        context: structuredClone(unit.context),
+      },
     ],
     updatedAt: now,
   };
@@ -126,7 +167,7 @@ export function createLesson(
     unitRevision: approval.revision,
     stepIds: [...new Set(stepIds)],
     goalIds: [...new Set(steps.flatMap((step) => step.goalIds))],
-    sessionMinutes: unit.context.sessionMinutes,
+    sessionMinutes: (approval.context ?? unit.context).sessionMinutes,
     origin,
     createdAt: now,
     updatedAt: now,
@@ -138,6 +179,13 @@ export function lessonOutline(unit: Unit, steps: LearningStep[]): LessonContent 
   const first = Math.max(2, Math.floor(minutes * 0.15));
   const rehearsal = Math.max(3, Math.floor(minutes * 0.55));
   const evidence = Math.max(2, Math.floor(minutes * 0.15));
+  const refs = [
+    ...new Map(
+      steps
+        .flatMap((step) => step.sourceRefs ?? [])
+        .map((ref) => [`${ref.documentId}:${ref.page}:${ref.quote}`, ref]),
+    ).values(),
+  ].slice(0, 12);
   function concise(values: string[]) {
     const combined = values.join('\n');
     return combined.length <= 2000
@@ -195,6 +243,7 @@ export function lessonOutline(unit: Unit, steps: LearningStep[]): LessonContent 
       'Choose a temporary support based on observed need. Note what evidence would let you reduce it.',
     evidence: concise(steps.map((step) => step.evidence)),
     transfer: concise(steps.map((step) => step.transfer)),
+    ...(refs.length ? { sourceRefs: refs } : {}),
   };
 }
 

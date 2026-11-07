@@ -30,6 +30,8 @@ import { serializeLibrary } from '../../shared/storage';
 import { GoalsEditor, StepEditor } from './BlueprintEditors';
 import { LessonCreator, LessonView } from './Lessons';
 import { Empty, Eyebrow, Tag, downloadJSON } from './ui';
+import { UnitCurriculum } from './UnitCurriculum';
+import { SourceCitations } from './CurriculumSources';
 
 export type Tab = 'overview' | 'journey' | 'lessons' | 'insights';
 const tabs = [
@@ -211,6 +213,7 @@ export default function Workspace({
 
       {tab === 'overview' && (
         <div className="overview-content">
+          <UnitCurriculum unit={unit} aiEnabled={aiEnabled} onUpdate={onUpdate} notify={notify} />
           <section className="destination">
             <div>
               <Eyebrow>The shared destination</Eyebrow>
@@ -259,6 +262,10 @@ export default function Workspace({
                             {originLabel[goal.origin]}
                             {goal.reviewStatus === 'edited' ? ' · teacher edited' : ''}
                           </small>
+                          <SourceCitations
+                            refs={goal.sourceRefs}
+                            sources={unit.context.curriculumSources ?? []}
+                          />
                         </div>
                       </div>
                     ))}
@@ -281,7 +288,13 @@ export default function Workspace({
                 {unit.blueprint.demands.map((demand) => (
                   <div className="demand" key={demand.id}>
                     <span className="demand-domain">{demand.domain}</span>
-                    <p>{demand.text}</p>
+                    <div>
+                      <p>{demand.text}</p>
+                      <SourceCitations
+                        refs={demand.sourceRefs}
+                        sources={unit.context.curriculumSources ?? []}
+                      />
+                    </div>
                     <Tag tone={demand.priority === 'Teach explicitly' ? 'teaching' : ''}>
                       {demand.priority}
                     </Tag>
@@ -316,7 +329,10 @@ export default function Workspace({
                 </span>
                 <Tag>{unit.mode === 'example' ? 'Example context' : 'Teacher entered'}</Tag>
               </summary>
-              <p className="preserve-lines">{unit.context.curriculum}</p>
+              <p className="preserve-lines">
+                {unit.context.curriculum ||
+                  'The reviewed PDF pages above supply this unit’s curriculum context.'}
+              </p>
               <p className="privacy-note">
                 {unit.mode === 'example'
                   ? 'Illustrative planning context, not an approved curriculum.'
@@ -428,6 +444,10 @@ export default function Workspace({
                       <p>{step.languageFocus || 'Describe the language students will develop.'}</p>
                     </div>
                   </div>
+                  <SourceCitations
+                    refs={step.sourceRefs}
+                    sources={unit.context.curriculumSources ?? []}
+                  />
                   <details className="step-details">
                     <summary>
                       Evidence, transfer & supports <ChevronRight size={14} />

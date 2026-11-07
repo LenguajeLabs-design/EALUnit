@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 import { createApp } from './app';
 
@@ -12,6 +13,13 @@ if (!['127.0.0.1', 'localhost', '::1'].includes(host)) {
   );
 }
 const app = createApp();
+const pdfRoot = path.dirname(fileURLToPath(import.meta.resolve('pdfjs-dist/package.json')));
+for (const folder of ['cmaps', 'standard_fonts', 'wasm']) {
+  app.use(
+    `/pdf-assets/${folder}`,
+    express.static(path.join(pdfRoot, folder), { index: false, dotfiles: 'deny' }),
+  );
+}
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.resolve('dist')));
   app.get('/{*path}', (_req, res) => res.sendFile(path.resolve('dist/index.html')));

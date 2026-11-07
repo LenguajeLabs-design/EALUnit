@@ -9,6 +9,7 @@ import {
 } from '../../shared/model';
 import { createLesson, currentApproval, lessonOutline, newId } from '../../shared/planning';
 import { Dialog, Field, Spinner, Tag, postJSON } from './ui';
+import { SourceCitations } from './CurriculumSources';
 
 export function LessonCreator({
   unit,
@@ -199,6 +200,10 @@ export function LessonView({
         </div>
       )}
       <div className="lesson-context">
+        <SourceCitations
+          refs={lesson.sourceRefs}
+          sources={(approval.context ?? unit.context).curriculumSources ?? []}
+        />
         <span className="small-label">Connected learning steps</span>
         <div className="tag-row">
           {steps.map((step) => (

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { unitSchema, type Unit } from './model';
 import { blueprintIssues } from './planning';
+import { blueprintReferenceIssues, referenceIssues } from './curriculum';
 
 export const STORAGE_KEY = 'eal-unit-library-v1';
 export const MAX_BACKUP_BYTES = 5 * 1024 * 1024;
@@ -17,6 +18,8 @@ export function validateLibrary(value: unknown): Library {
   if (new Set(library.units.map((unit) => unit.id)).size !== library.units.length)
     throw new Error('This backup contains duplicate unit IDs.');
   for (const unit of library.units) {
+    if (blueprintReferenceIssues(unit.blueprint, unit.context.curriculumSources ?? []).length)
+      throw new Error('A draft contains an invalid curriculum source reference.');
     const goals = new Set(unit.blueprint.goals.map((goal) => goal.id));
     const steps = new Set(unit.blueprint.steps.map((step) => step.id));
     if (
@@ -43,6 +46,19 @@ export function validateLibrary(value: unknown): Library {
     if (new Set(unit.lessons.map((lesson) => lesson.id)).size !== unit.lessons.length)
       throw new Error('A unit has duplicate lesson IDs.');
     for (const approval of unit.approvals) {
+      if (
+        blueprintReferenceIssues(
+          approval.blueprint,
+          (approval.context ?? unit.context).curriculumSources ?? [],
+        ).length
+      )
+        throw new Error('An approved revision has an invalid curriculum source reference.');
+      if (
+        approval.revision === unit.revision &&
+        approval.context &&
+        JSON.stringify(approval.context) !== JSON.stringify(unit.context)
+      )
+        throw new Error('An approved revision differs from the current curriculum context.');
       if (blueprintIssues(approval.blueprint).length)
         throw new Error(
           'An approved blueprint contains invalid relationships or incomplete planning fields.',
@@ -57,6 +73,13 @@ export function validateLibrary(value: unknown): Library {
       const approval = unit.approvals.find((approval) => approval.revision === lesson.unitRevision);
       if (!approval || lesson.unitId !== unit.id)
         throw new Error('A lesson is missing its approved unit revision.');
+      if (
+        referenceIssues(
+          lesson.sourceRefs,
+          (approval.context ?? unit.context).curriculumSources ?? [],
+        ).length
+      )
+        throw new Error('A lesson has an invalid curriculum source reference.');
       if (
         lesson.goalIds.some((id) => !approval.blueprint.goals.some((goal) => goal.id === id)) ||
         lesson.stepIds.some((id) => !approval.blueprint.steps.some((step) => step.id === id))

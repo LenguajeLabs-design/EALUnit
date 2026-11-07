@@ -488,6 +488,517 @@ summary::-webkit-details-marker { display: none; }
 .has-units .hero-copy > p { max-width: 660px; margin-top: 16px; }
 .has-units .hero-actions { margin-top: 20px; }
 
+/* Reviewed curriculum PDFs */
+.curriculum-panel {
+  margin: 24px 0;
+  padding: 21px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-subtle);
+  min-width: 0;
+}
+.curriculum-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 15px;
+  margin-bottom: 17px;
+}
+.curriculum-heading h3 {
+  font-size: 16px;
+}
+.curriculum-heading p {
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.pdf-upload {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 22px 18px;
+  background: var(--paper);
+  border: 1px dashed var(--line-strong);
+  border-radius: 7px;
+}
+.pdf-upload.dragging {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.pdf-upload > svg,
+.curriculum-file > svg,
+.pdf-review-heading > svg {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.pdf-upload > div:not(.pdf-progress) {
+  flex: 1;
+  min-width: 140px;
+}
+.pdf-upload strong,
+.curriculum-file strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 550;
+}
+.pdf-upload span:not(.spinner),
+.curriculum-file span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 5px;
+}
+.pdf-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.pdf-progress span {
+  flex: 1;
+}
+.pdf-progress .spinner {
+  color: var(--accent);
+}
+.saved-pdfs-button {
+  font-size: 12px;
+  margin-top: 9px;
+}
+.pdf-library {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  margin-top: 8px;
+  max-height: 270px;
+  overflow-y: auto;
+}
+.pdf-library-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px;
+}
+.pdf-library-row + .pdf-library-row {
+  border-top: 1px solid var(--line);
+}
+.pdf-library-row > div {
+  flex: 1;
+  min-width: 0;
+}
+.pdf-library-row strong {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.pdf-library-row span {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.pdf-library-row > svg {
+  flex-shrink: 0;
+  color: var(--muted);
+}
+.curriculum-attached {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.curriculum-file {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.curriculum-file > div {
+  flex: 1;
+  min-width: 0;
+}
+.curriculum-file strong {
+  overflow-wrap: anywhere;
+}
+.curriculum-file .text-button {
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.pdf-review {
+  padding: 18px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+}
+.pdf-review-heading {
+  display: flex;
+  gap: 12px;
+  align-items: start;
+}
+.pdf-review-heading h4 {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.pdf-review-heading p {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 5px;
+}
+.pdf-review-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 17px;
+}
+.pdf-review-toolbar > span {
+  color: var(--text-body);
+  font-size: 12px;
+  font-weight: 550;
+}
+.pdf-review-toolbar > div {
+  display: flex;
+  gap: 15px;
+}
+.pdf-review-toolbar .text-button {
+  font-size: 11px;
+}
+.pdf-review-layout {
+  display: grid;
+  grid-template-columns: 125px minmax(0, 1fr);
+  gap: 16px;
+  margin-top: 8px;
+}
+.pdf-page-list {
+  max-height: 315px;
+  overflow-y: auto;
+  background: var(--surface-subtle);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+.pdf-page-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 9px;
+}
+.pdf-page-row + .pdf-page-row {
+  border-top: 1px solid var(--line);
+}
+.pdf-page-row.current {
+  background: var(--accent-soft);
+}
+.pdf-page-row input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+.pdf-page-row button {
+  background: none;
+  border: none;
+  padding: 5px 0;
+  text-align: left;
+  min-height: 35px;
+  color: var(--ink);
+  font-size: 12px;
+  flex: 1;
+}
+.pdf-page-row small {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+  margin-top: 3px;
+}
+.pdf-text-preview {
+  min-width: 0;
+}
+.pdf-text-preview .small-label {
+  display: block;
+  font-size: 9px;
+  margin-bottom: 8px;
+}
+.pdf-text-preview pre,
+.source-full-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text-body);
+  max-height: 285px;
+  min-height: 210px;
+  overflow-y: auto;
+  padding: 15px;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper);
+}
+.pdf-review-help {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.8;
+}
+.pdf-review-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 17px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+.pdf-review-footer > span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.pdf-review-footer > span.over {
+  color: var(--danger);
+}
+.pdf-review-footer > div {
+  display: flex;
+  gap: 9px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.unit-curriculum {
+  background: var(--surface-subtle);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 20px 22px;
+  margin: 26px 0 0;
+}
+.unit-curriculum h3 {
+  font-size: 16px;
+}
+.unit-curriculum .section-title-row > div:first-child > p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 7px;
+}
+.unit-curriculum .button {
+  font-size: 11px;
+}
+.unit-source-list {
+  display: flex;
+  gap: 11px;
+  flex-wrap: wrap;
+  margin-top: 17px;
+}
+.unit-source-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--accent-hover);
+  padding: 13px;
+  text-align: left;
+  max-width: 100%;
+}
+.unit-source-link svg {
+  flex-shrink: 0;
+}
+.unit-source-link strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.unit-source-link small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+.source-citations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 9px;
+}
+.source-citation {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  color: var(--accent-hover);
+  border: 0;
+  padding: 4px 0;
+  background: none;
+  font-size: 10px;
+  max-width: 100%;
+  text-align: left;
+}
+.source-citation span {
+  overflow-wrap: anywhere;
+}
+.source-citation:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.source-dialog-toolbar {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.source-dialog-toolbar label {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 12px;
+}
+.source-dialog-toolbar select {
+  min-height: 39px;
+  border: 1px solid var(--line-strong);
+  padding: 7px 10px;
+  background: var(--paper);
+  border-radius: 5px;
+}
+.source-dialog-toolbar .text-button {
+  font-size: 11px;
+}
+.source-full-text {
+  max-height: 50vh;
+}
+.source-quote {
+  margin: 0 0 20px;
+  padding: 14px 18px;
+  border-left: 2px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--text-body);
+  font-size: 13px;
+}
+.curriculum-proposal > p {
+  color: var(--text-body);
+  font-size: 14px;
+  line-height: 1.8;
+}
+.curriculum-proposal h3 {
+  margin: 25px 0 15px;
+  font-size: 17px;
+}
+.proposal-goal {
+  border-left: 2px solid var(--line-strong);
+  padding-left: 15px;
+  margin: 16px 0;
+}
+.proposal-goal p {
+  font-size: 13px;
+  color: var(--text-body);
+  margin-top: 6px;
+}
+.curriculum-proposal ol,
+.proposal-source-list {
+  padding-left: 20px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.curriculum-proposal li {
+  padding: 7px 0 12px 6px;
+}
+.curriculum-proposal li strong {
+  color: var(--ink);
+  font-weight: 550;
+}
+.curriculum-proposal li p {
+  margin-top: 7px;
+}
+@media (max-width: 730px) {
+  .curriculum-panel {
+    padding: 17px;
+  }
+  .unit-curriculum .section-title-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 17px;
+  }
+  .unit-curriculum .button-group {
+    gap: 8px;
+  }
+  .curriculum-file {
+    flex-wrap: wrap;
+  }
+  .curriculum-file > div {
+    flex-basis: 70%;
+  }
+  .curriculum-file .text-button {
+    margin-left: 32px;
+  }
+  .curriculum-file > .icon-button {
+    margin-left: auto;
+  }
+  .source-dialog-toolbar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+@media (max-width: 520px) {
+  .curriculum-panel {
+    padding: 15px;
+    margin-inline: -8px;
+  }
+  .pdf-upload {
+    padding: 18px 14px;
+    gap: 11px;
+  }
+  .pdf-upload > .file-button {
+    margin-left: 34px;
+  }
+  .pdf-upload > div:not(.pdf-progress) {
+    min-width: 120px;
+  }
+  .pdf-review {
+    padding: 14px;
+  }
+  .pdf-review-layout {
+    grid-template-columns: 1fr;
+  }
+  .pdf-page-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-height: 140px;
+  }
+  .pdf-page-row {
+    padding: 6px 9px;
+  }
+  .pdf-review-toolbar {
+    flex-direction: column;
+    align-items: start;
+    gap: 0;
+  }
+  .pdf-text-preview pre {
+    max-height: 230px;
+    min-height: 140px;
+  }
+  .pdf-review-footer .button {
+    font-size: 11px;
+    padding-inline: 12px;
+  }
+  .pdf-progress {
+    flex-wrap: wrap;
+  }
+  .pdf-progress .text-button {
+    margin-left: 30px;
+  }
+  .unit-curriculum {
+    padding: 18px;
+  }
+  .unit-curriculum .button-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .source-citation {
+    font-size: 11px;
+  }
+}
+
 @media (min-width: 1600px) {
   .library-hero { gap: 85px; }
   .hero-copy h1 { font-size: 76px; }

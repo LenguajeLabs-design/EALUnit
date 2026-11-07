@@ -1,4 +1,11 @@
 import { z } from 'zod';
+import {
+  curriculumSourceSchema,
+  MAX_CURRICULUM_SOURCES,
+  MAX_SOURCE_TEXT,
+  sourceCharacterCount,
+  sourceReferenceSchema,
+} from './curriculum';
 
 const id = z
   .string()
@@ -15,15 +22,38 @@ export const originSchema = z.enum([
 ]);
 export const reviewSchema = z.enum(['unreviewed', 'approved', 'edited']);
 
-export const contextSchema = z.object({
-  title: z.string().trim().min(3).max(120),
-  grade: z.string().max(40),
-  strand: z.enum(['Reading', 'Writing']),
-  durationWeeks: z.number().int().min(1).max(12),
-  sessionMinutes: z.number().int().min(10).max(120),
-  curriculum: z.string().trim().min(30).max(12000),
-  groupContext: z.string().max(2000),
-});
+export const contextSchema = z
+  .object({
+    title: z.string().trim().min(3).max(120),
+    grade: z.string().max(40),
+    strand: z.enum(['Reading', 'Writing']),
+    durationWeeks: z.number().int().min(1).max(12),
+    sessionMinutes: z.number().int().min(10).max(120),
+    curriculum: z.string().trim().max(12000),
+    groupContext: z.string().max(2000),
+    curriculumSources: z.array(curriculumSourceSchema).max(MAX_CURRICULUM_SOURCES).optional(),
+  })
+  .superRefine((context, ctx) => {
+    const sources = context.curriculumSources ?? [];
+    if (context.curriculum.length < 30 && sourceCharacterCount(sources) < 30)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['curriculum'],
+        message: 'Add a short workshop overview or review the relevant PDF pages.',
+      });
+    if (sourceCharacterCount(sources) > MAX_SOURCE_TEXT)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['curriculumSources'],
+        message: 'Choose no more than 40,000 characters across your PDF sources.',
+      });
+    if (new Set(sources.map((source) => source.id)).size !== sources.length)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['curriculumSources'],
+        message: 'Use each PDF source only once in this unit.',
+      });
+  });
 
 export const goalSchema = z.object({
   id,
@@ -31,6 +61,7 @@ export const goalSchema = z.object({
   text,
   origin: originSchema,
   reviewStatus: reviewSchema,
+  sourceRefs: z.array(sourceReferenceSchema).max(6).optional(),
 });
 export const demandSchema = z.object({
   id,
@@ -39,6 +70,7 @@ export const demandSchema = z.object({
   priority: z.enum(['Teach explicitly', 'Support participation', 'Later']),
   origin: originSchema,
   reviewStatus: reviewSchema,
+  sourceRefs: z.array(sourceReferenceSchema).max(6).optional(),
 });
 export const stepSchema = z.object({
   id,
@@ -52,6 +84,7 @@ export const stepSchema = z.object({
   supports: z.array(z.string().max(400)).max(8),
   origin: originSchema,
   reviewStatus: reviewSchema,
+  sourceRefs: z.array(sourceReferenceSchema).max(6).optional(),
 });
 export const blueprintSchema = z.object({
   summary: text,
@@ -77,6 +110,7 @@ export const lessonContentSchema = z.object({
   supportNotes: text,
   evidence: text,
   transfer: text,
+  sourceRefs: z.array(sourceReferenceSchema).max(12).optional(),
 });
 export const lessonSchema = lessonContentSchema.extend({
   id,
@@ -93,6 +127,7 @@ export const approvalSchema = z.object({
   revision: z.number().int().min(1),
   approvedAt: z.iso.datetime(),
   blueprint: blueprintSchema,
+  context: contextSchema.optional(),
 });
 export const unitSchema = z.object({
   id,

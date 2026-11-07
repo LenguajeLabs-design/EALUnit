@@ -2,7 +2,7 @@
 
 ## Current state
 
-As of 6 November 2026, EAL Unit has an independent local application implementing the first planning workflow, versioned approvals, connected lessons, browser persistence, JSON backups, and basic unit insights. See the README for setup and `architecture.md` for the current design and limits.
+As of 7 November 2026, EAL Unit has an independent application implementing the first planning workflow, versioned approvals, connected lessons, browser persistence, JSON backups, basic unit insights, and locally extracted curriculum PDFs with reviewed pages and checked source passages. A GitHub Pages build supports PDF sources and manual planning; live AI generation remains on the separate local server. See the README for setup and `architecture.md` for the current design and limits.
 
 Scaffold App V.2.0 was inspected read-only. Its source contains a React/Vite/TypeScript frontend, an Express API, validated AI generation, and saved-lesson patterns. Its development-only unit-planning preview demonstrates a unit overview, language journey, lesson focus, and evidence-driven next steps using preset example lessons and local storage. These are reference patterns, not implemented EAL Unit features.
 
