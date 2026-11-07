@@ -97,6 +97,10 @@ GitHub backs up the application source, not the plans or PDFs saved in your brow
 - Support anonymized group planning without requiring identifiable student information.
 - Make missing information visible. Never invent curriculum standards, WIDA codes, or verified alignments.
 
+## Brand assets
+
+The EAL Unit identity uses a joined, two-stroke U in near-black and blue. Reusable assets are the [symbol](public/mark.svg), [wordmark](public/wordmark.svg), and [favicon](public/favicon.svg).
+
 ## Relationship to Scaffold
 
 EAL Unit is an independent project. Scaffold App V.2.0 is a read-only reference for useful design patterns and instructional principles, including its development-only unit-planning preview.

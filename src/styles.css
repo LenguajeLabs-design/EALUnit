@@ -58,9 +58,11 @@ button, a, input, textarea, select, summary { outline-offset: 4px; }
 button svg, a svg { flex-shrink: 0; }
 .app-shell { min-height: 100vh; }
 .sidebar { width: 236px; position: fixed; inset: 0 auto 0 0; background: var(--surface-subtle); border-right: 1px solid var(--line); display: flex; flex-direction: column; padding: 36px 22px 20px; z-index: 20; overflow-y: auto; }
-.brand { display: flex; align-items: center; gap: 12px; padding: 0 10px; }
-.brand > span { font-family: 'Manrope', sans-serif; font-size: 23px; font-weight: 700; letter-spacing: -.065em; line-height: 1.2; }
-.brand small { display: block; font-family: 'DM Sans', sans-serif; font-size: 8px; font-weight: 650; letter-spacing: .17em; margin-top: 6px; color: var(--text-body); }
+.brand { display: flex; align-items: center; gap: 10px; padding: 0 10px; min-height: 44px; }
+.brand > img { flex-shrink: 0; }
+.brand > span { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 23px; font-weight: 650; letter-spacing: -.045em; line-height: 1.15; white-space: nowrap; }
+.brand .brand-unit { font-weight: 400; }
+.brand small { display: block; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 7px; font-weight: 600; letter-spacing: .17em; margin-top: 7px; color: var(--muted); }
 .sidebar-nav { margin-top: 58px; }
 .nav-label, .small-label, .eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: .13em; font-weight: 650; color: var(--text-body); }
 .nav-label { display: block; margin: 0 13px 13px; font-size: 9px; }

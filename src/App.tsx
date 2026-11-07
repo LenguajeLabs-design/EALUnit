@@ -236,9 +236,9 @@ export default function App() {
       </a>
       <aside className="sidebar no-print">
         <a href="#/units" className="brand" aria-label="EAL Unit home">
-          <img src={`${import.meta.env.BASE_URL}mark.svg`} alt="" width="42" height="42" />
+          <img src={`${import.meta.env.BASE_URL}mark.svg?v=2`} alt="" width="44" height="44" />
           <span>
-            EAL Unit<small>BY LENGUAJE LABS</small>
+            EAL <span className="brand-unit">Unit</span><small>BY LENGUAJE LABS</small>
           </span>
         </a>
         <div className="sidebar-nav">
